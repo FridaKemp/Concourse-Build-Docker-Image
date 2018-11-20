@@ -1,0 +1,27 @@
+---
+jobs:
+- name: job-build-task-image
+  public: true
+  serial: true
+  plan:
+  - get: git-pipeline-docker-image
+  - put: docker-image
+    params:
+      build: git-pipeline-docker-image/ci_image #pipeline/ci_image
+
+resources:
+- name: git-pipeline-docker-image
+  type: git
+  source:
+    uri: {{pipeline-git-repo}}
+    branch: master
+    private_key: {{github-private-key}}
+    #paths: [ci_image/*]
+
+- name: docker-image
+  type: docker-image
+  source:
+    email: {{docker-hub-email}}
+    username: {{docker-hub-username}}
+    password: {{docker-hub-password}}
+    repository: {{docker-create-hub-task-image}}
